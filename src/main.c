@@ -5,6 +5,7 @@
 #include<stdbool.h>
 #include<SDL.h>
 
+bool windowed = true;
 bool is_running = false;
 SDL_Window* window = NULL;
 SDL_Renderer* renderer = NULL;
@@ -21,6 +22,7 @@ bool initialize_window(void)
 		fprintf(stderr, "Error init SDL");
 		return false;
 	}
+
 	window = SDL_CreateWindow(
 		NULL,
 		SDL_WINDOWPOS_CENTERED,
@@ -43,6 +45,11 @@ bool initialize_window(void)
 		if (!window)
 			fprintf(stderr, "Error init renderer");
 		return false;
+	}
+
+	if(!windowed)
+	{
+		SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
 	}
 
 	return true;
@@ -94,13 +101,41 @@ void render_color_buffer(void)
 	SDL_RenderCopy(renderer, color_buffer_texture, NULL, NULL);
 }
 
+void draw_grid(uint32_t color)
+{
+	for(int y=0; y<window_height; y++)
+	{
+		for(int x=0; x<window_width; x++)
+		{
+			if (x % 10 == 0 || y % 10 == 0)
+			{
+				color_buffer[y*window_width + x] = color;
+			}
+		}
+	}
+}
+
+void draw_rect(int x, int y,int width, int height, uint32_t color)
+{
+	for (int curr_y = y; curr_y < y + height; curr_y++)
+	{
+		for (int curr_x = x; curr_x < x + width; curr_x++)
+		{
+			color_buffer[curr_y*window_width + curr_x] = color;
+		}
+	}
+}
+
 void render(void)
 {
 	SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 	SDL_RenderClear(renderer);
 
+	//draw_grid(0xFFFFFFFF);
+	draw_rect(100, 100, 100, 100, 0xFFFF0000);
+
 	render_color_buffer();
-	clear_color_buffer(0xFFFF00);
+	clear_color_buffer(0xFF000000);
 
 	SDL_RenderPresent(renderer);
 }
