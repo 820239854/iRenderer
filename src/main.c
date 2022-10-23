@@ -2,17 +2,18 @@
 #include "display.h"
 #include "vector.h"
 
-float fov_factor = 120;
+float fov_factor = 640;
 bool is_running = false;
 
 #define N_POINTS (9*9*9)
+
+vec3_t camera_pos = { 0, 0, -5 };
 vec3_t cube_points[N_POINTS];
 vec2_t projected_points[N_POINTS];
 
 void setup(void)
 {
 	color_buffer = (uint32_t*)malloc(window_width*window_height*sizeof(uint32_t));
-
 	color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
 	                                         SDL_TEXTUREACCESS_STREAMING, window_width, window_height);
 	int point_count = 0;
@@ -50,8 +51,8 @@ vec2_t project(vec3_t point)
 {
 	vec2_t projected_point =
 	{
-		fov_factor * point.x,
-		fov_factor * point.y
+		fov_factor * point.x / point.z,
+		fov_factor * point.y / point.z
 	};
 	return projected_point;
 }
@@ -60,7 +61,9 @@ void update(void)
 {
 	for(int i=0; i<N_POINTS; i++)
 	{
-		projected_points[i]= project(cube_points[i]);
+		vec3_t point = cube_points[i];
+		point.z -= camera_pos.z;
+		projected_points[i] = project(point);
 	}
 }
 
