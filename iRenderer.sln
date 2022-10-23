@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32630.192
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iRenderer", "iRenderer.vcxproj", "{A07E8B29-1DED-4C01-89BC-9DB9D8EA0961}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A07E8B29-1DED-4C01-89BC-9DB9D8EA0961}.Debug|x64.ActiveCfg = Debug|x64
+		{A07E8B29-1DED-4C01-89BC-9DB9D8EA0961}.Debug|x64.Build.0 = Debug|x64
+		{A07E8B29-1DED-4C01-89BC-9DB9D8EA0961}.Debug|x86.ActiveCfg = Debug|Win32
+		{A07E8B29-1DED-4C01-89BC-9DB9D8EA0961}.Debug|x86.Build.0 = Debug|Win32
+		{A07E8B29-1DED-4C01-89BC-9DB9D8EA0961}.Release|x64.ActiveCfg = Release|x64
+		{A07E8B29-1DED-4C01-89BC-9DB9D8EA0961}.Release|x64.Build.0 = Release|x64
+		{A07E8B29-1DED-4C01-89BC-9DB9D8EA0961}.Release|x86.ActiveCfg = Release|Win32
+		{A07E8B29-1DED-4C01-89BC-9DB9D8EA0961}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C06E4839-214F-4514-9156-957D9687B58B}
+	EndGlobalSection
+EndGlobal
