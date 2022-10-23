@@ -21,12 +21,18 @@
     <ClCompile Include="src\display.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\vector.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\SDL2.dll" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\display.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
