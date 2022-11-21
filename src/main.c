@@ -98,10 +98,18 @@ void render(void)
 	for (int i = 0; i < N_MESH_FACE8; i++)
 	{
 		triangle_t triangle = triangles_to_render[i];
-		draw_rect(triangle.points[0].x, triangle.points[0].y, 3, 3, 0xFFFFFFFF);
-		draw_rect(triangle.points[1].x, triangle.points[1].y, 3, 3, 0xFFFFFFFF);
-		draw_rect(triangle.points[2].x, triangle.points[2].y, 3, 3, 0xFFFFFFFF);
+		vec2_t points[3];
+		points[0] = triangle.points[0];
+		points[1] = triangle.points[1];
+		points[2] = triangle.points[2];
+
+		draw_rect(points[0].x, points[0].y, 3, 3, 0xFFFFFFFF);
+		draw_rect(points[1].x, points[1].y, 3, 3, 0xFFFFFFFF);
+		draw_rect(points[2].x, points[2].y, 3, 3, 0xFFFFFFFF);
+
+		draw_triangle(points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y, 0xFF00FF00);
 	}
+
 
 	render_color_buffer();
 	SDL_RenderPresent(renderer);
