@@ -8,18 +8,16 @@ triangle_t *triangles_to_render = NULL;
 
 float fov_factor = 640;
 bool is_running = false;
-
 int previoous_frame_time = 0;
 
-vec3_t camera_pos = { 0, 0, -5 };
+vec3_t camera_pos = { 0, 0, 0 };
 
 void setup(void)
 {
 	color_buffer = (uint32_t*)malloc(window_width*window_height*sizeof(uint32_t));
 	color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
 	                                         SDL_TEXTUREACCESS_STREAMING, window_width, window_height);
-	//load_cube_mesh_data();
-	load_obj_file_data("./assets/efa.obj");
+	load_obj_file_data("./assets/cube.obj");
 }
 
 void process_input(void)
@@ -73,8 +71,7 @@ void update(void)
 		face_vertices[1] = mesh.vertices[mesh_face.b - 1];
 		face_vertices[2] = mesh.vertices[mesh_face.c - 1];
 
-		triangle_t projected_triangle;
-
+		vec3_t transformed_vertices[3];
 		for (int j = 0; j < 3; j++)
 		{
 			vec3_t transformed_vertex = face_vertices[j];
@@ -82,16 +79,32 @@ void update(void)
 			transformed_vertex = vec3_rotate_x(transformed_vertex, mesh.rotation.x);
 			transformed_vertex = vec3_rotate_y(transformed_vertex, mesh.rotation.y);
 			transformed_vertex = vec3_rotate_z(transformed_vertex, mesh.rotation.z);
-			transformed_vertex.z -= camera_pos.z;
-			
-			vec2_t projected_point = project(transformed_vertex);
+			transformed_vertex.z += 5;
+			transformed_vertices[j] = transformed_vertex;
+		}
+		vec3_t vector_a = transformed_vertices[0];
+		vec3_t vector_b = transformed_vertices[1];
+		vec3_t vector_c = transformed_vertices[2];
 
+		vec3_t vector_ab = vec3_sub(vector_b, vector_a);
+		vec3_t vector_ac = vec3_sub(vector_c, vector_a);
+		vec3_t normal = vec3_cross(vector_ab, vector_ac);
+		vec3_normalize(&normal);
+
+		vec3_t camera_ray = vec3_sub(camera_pos, vector_a);
+		float dot_normal_camera = vec3_dot(normal, camera_ray);
+		if(dot_normal_camera < 0)
+		{
+			continue;
+		}
+		triangle_t projected_triangle;
+		for(int j = 0; j < 3; j++)
+		{
+			vec2_t projected_point = project(transformed_vertices[j]);
 			projected_point.x += (window_width / 2);
 			projected_point.y += (window_height / 2);
-
 			projected_triangle.points[j] = projected_point;
 		}
-
 		array_push(triangles_to_render, projected_triangle);
 	}
 }
