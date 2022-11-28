@@ -14,6 +14,8 @@ vec3_t camera_pos = { 0, 0, 0 };
 
 void setup(void)
 {
+	render_method = RENDER_WIRE;
+	cull_method = CULL_BACKFACE;
 	color_buffer = (uint32_t*)malloc(window_width*window_height*sizeof(uint32_t));
 	color_buffer_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888,
 	                                         SDL_TEXTUREACCESS_STREAMING, window_width, window_height);
@@ -32,6 +34,18 @@ void process_input(void)
 		case SDL_KEYDOWN:
 			if (event.key.keysym.sym == SDLK_ESCAPE)
 				is_running = false;
+			if (event.key.keysym.sym == SDLK_1)
+				render_method = RENDER_WIRE_VERTEX;
+			if (event.key.keysym.sym == SDLK_2)
+				render_method = RENDER_WIRE;
+			if (event.key.keysym.sym == SDLK_3)
+				render_method = RENDER_FILL_TRIANGLE;
+			if (event.key.keysym.sym == SDLK_4)
+				render_method = RENDER_FILL_TRIANGLE_WIRE;
+			if (event.key.keysym.sym == SDLK_c)
+				cull_method = CULL_BACKFACE;
+			if (event.key.keysym.sym == SDLK_d)
+				cull_method = CULL_NONE;
 			break;
 	}
 }
@@ -82,20 +96,23 @@ void update(void)
 			transformed_vertex.z += 5;
 			transformed_vertices[j] = transformed_vertex;
 		}
-		vec3_t vector_a = transformed_vertices[0];
-		vec3_t vector_b = transformed_vertices[1];
-		vec3_t vector_c = transformed_vertices[2];
-
-		vec3_t vector_ab = vec3_sub(vector_b, vector_a);
-		vec3_t vector_ac = vec3_sub(vector_c, vector_a);
-		vec3_t normal = vec3_cross(vector_ab, vector_ac);
-		vec3_normalize(&normal);
-
-		vec3_t camera_ray = vec3_sub(camera_pos, vector_a);
-		float dot_normal_camera = vec3_dot(normal, camera_ray);
-		if(dot_normal_camera < 0)
+		if (cull_method == CULL_BACKFACE)
 		{
-			continue;
+			vec3_t vector_a = transformed_vertices[0];
+			vec3_t vector_b = transformed_vertices[1];
+			vec3_t vector_c = transformed_vertices[2];
+
+			vec3_t vector_ab = vec3_sub(vector_b, vector_a);
+			vec3_t vector_ac = vec3_sub(vector_c, vector_a);
+			vec3_t normal = vec3_cross(vector_ab, vector_ac);
+			vec3_normalize(&normal);
+
+			vec3_t camera_ray = vec3_sub(camera_pos, vector_a);
+			float dot_normal_camera = vec3_dot(normal, camera_ray);
+			if(dot_normal_camera < 0)
+			{
+				continue;
+			}
 		}
 		triangle_t projected_triangle;
 		for(int j = 0; j < 3; j++)
@@ -121,13 +138,20 @@ void render(void)
 		points[0] = triangle.points[0];
 		points[1] = triangle.points[1];
 		points[2] = triangle.points[2];
-
-		draw_rect(points[0].x, points[0].y, 3, 3, 0xFFFFFFFF);
-		draw_rect(points[1].x, points[1].y, 3, 3, 0xFFFFFFFF);
-		draw_rect(points[2].x, points[2].y, 3, 3, 0xFFFFFFFF);
-
-		draw_filled_triangle(points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y, 0xFF00FF00);
-		draw_triangle(points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y, 0xFFFFFFFF);
+		if(render_method == RENDER_FILL_TRIANGLE || render_method == RENDER_FILL_TRIANGLE_WIRE)
+		{
+			draw_filled_triangle(points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y, 0xFF00FF00);
+		}
+		if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE)
+		{
+			draw_triangle(points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y, 0xFFFFFFFF);
+		}
+		if(render_method == RENDER_WIRE_VERTEX)
+		{
+			draw_rect(points[0].x-3, points[0].y-3, 6, 6, 0xFFFF0000);
+			draw_rect(points[1].x-3, points[1].y-3, 6, 6, 0xFFFF0000);
+			draw_rect(points[2].x-3, points[2].y-3, 6, 6, 0xFFFF0000);
+		}
 	}
 
 	array_free(triangles_to_render);
