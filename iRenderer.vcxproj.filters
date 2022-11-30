@@ -36,6 +36,9 @@
     <ClCompile Include="src\matrix.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\light.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\SDL2.dll" />
@@ -57,6 +60,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\matrix.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\lignt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
