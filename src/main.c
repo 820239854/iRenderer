@@ -5,6 +5,8 @@
 #include "mesh.h"
 #include "matrix.h"
 #include "lignt.h"
+#include "texture.h"
+#include "triangle.h"
 
 triangle_t* triangles_to_render = NULL;
 
@@ -30,9 +32,12 @@ void setup(void)
 	float znear = 1.0;
 	float zfar = 100.0;
 	proj_matrix = mat4_make_perspective(fov_y, aspect_y, znear, zfar);
+	mesh_texture = (uint32_t*)REDBRICK_TEXTURE;
+	texture_width = 64;
+	texture_height = 64;
 
-	load_obj_file_data("./assets/f22.obj");
-	//load_cube_mesh_data();
+	//load_obj_file_data("./assets/f22.obj");
+	load_cube_mesh_data();
 }
 
 void process_input(void)
@@ -55,6 +60,10 @@ void process_input(void)
 			render_method = RENDER_FILL_TRIANGLE;
 		if (event.key.keysym.sym == SDLK_4)
 			render_method = RENDER_FILL_TRIANGLE_WIRE;
+		if (event.key.keysym.sym == SDLK_5)
+			render_method = RENDER_TEXTURED;
+		if (event.key.keysym.sym == SDLK_6)
+			render_method = RENDER_TEXTURED_WIRE;
 		if (event.key.keysym.sym == SDLK_c)
 			cull_method = CULL_BACKFACE;
 		if (event.key.keysym.sym == SDLK_d)
@@ -150,6 +159,11 @@ void update(void)
 				{ projected_points[1].x, projected_points[1].y },
 				{ projected_points[2].x, projected_points[2].y },
 			},
+			.textcoords = {
+				{mesh_face.a_uv.u,mesh_face.a_uv.v},
+				{mesh_face.b_uv.u,mesh_face.b_uv.v},
+				{mesh_face.c_uv.u,mesh_face.c_uv.v},
+			},
 			.color = triangle_color,
 			.avg_depth = avg_depth
 		};
@@ -192,7 +206,15 @@ void render(void)
 				triangle.color
 			);
 		}
-		if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE)
+		if (render_method == RENDER_TEXTURED || render_method == RENDER_TEXTURED_WIRE) {
+			draw_textured_triangle(
+				points[0].x, points[0].y, triangle.textcoords[0].u, triangle.textcoords[0].v,
+				points[1].x, points[1].y, triangle.textcoords[1].u, triangle.textcoords[1].v,
+				points[2].x, points[2].y, triangle.textcoords[2].u, triangle.textcoords[2].v,
+				triangle.color
+			);
+		}
+		if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE || render_method == RENDER_TEXTURED_WIRE)
 		{
 			draw_triangle(points[0].x, points[0].y, points[1].x, points[1].y, points[2].x, points[2].y, 0xFFFFFFFF);
 		}
