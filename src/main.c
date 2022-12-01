@@ -138,7 +138,7 @@ void update(void)
 			projected_points[j].y *= (window_height / 2);
 
 			projected_points[j].x += (window_width / 2);
-			projected_points[j].y += (window_height / 2);
+			projected_points[j].y = -projected_points[j].y + (window_height / 2);
 		}
 		float avg_depth = (transformed_vertices[0].z + transformed_vertices[1].z + transformed_vertices[2].z) / 3.0;
 		float light_intensity_factor = -vec3_dot(normal, light.direction);
