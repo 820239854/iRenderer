@@ -82,7 +82,7 @@ void update(void)
 	previoous_frame_time = SDL_GetTicks();
 	triangles_to_render = NULL;
 
-	mesh.rotation.x += 0.005;
+	mesh.rotation.x -= 0.005;
 	//mesh.rotation.y += 0.01;
 	//mesh.rotation.z += 0.01;
 	//mesh.scale.x += 0.002;
@@ -211,7 +211,7 @@ void render(void)
 				points[0].x, points[0].y, triangle.textcoords[0].u, triangle.textcoords[0].v,
 				points[1].x, points[1].y, triangle.textcoords[1].u, triangle.textcoords[1].v,
 				points[2].x, points[2].y, triangle.textcoords[2].u, triangle.textcoords[2].v,
-				triangle.color
+				mesh_texture
 			);
 		}
 		if (render_method == RENDER_WIRE || render_method == RENDER_WIRE_VERTEX || render_method == RENDER_FILL_TRIANGLE_WIRE || render_method == RENDER_TEXTURED_WIRE)
